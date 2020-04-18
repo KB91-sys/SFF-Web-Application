@@ -22,6 +22,16 @@ namespace API_Web_application
         {
             services.AddDbContext<MovieContext>(opt =>
                 opt.UseInMemoryDatabase("Movie"));
+                        
+            services.AddControllers()
+                .AddXmlDataContractSerializerFormatters();
+            
+            services.AddControllers(options =>
+            {
+                options.RespectBrowserAcceptHeader = true;
+
+            });
+
 
             services.AddControllers();
         }

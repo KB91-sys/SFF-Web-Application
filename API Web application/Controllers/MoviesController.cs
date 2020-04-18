@@ -17,8 +17,6 @@ namespace SFF_API.Controllers
     public class MoviesController : ControllerBase
     {
 
-        List<Loan> LoanList = new List<Loan>();
-
         private readonly MovieContext _context;
 
         public MoviesController(MovieContext context)
@@ -112,40 +110,6 @@ namespace SFF_API.Controllers
                 return BadRequest();
            
         }
-
-        [HttpPost("borrow")]
-        public async Task<ActionResult<Movie>> BorrowMovies(Movie movies)
-        {
-
-            // Check if title exist in database 
-            bool exists = _context.Movies.Any(x => x.MovieTitle == movies.MovieTitle);
-
-
-
-
-            // If movies doesnt already exist in database and movietitle isnt null
-            if (movies.MovieTitle != null && exists == true)
-            {                
-                await _context.SaveChangesAsync();
-
-                return Ok(movies);
-            }
-           
-            if (exists == false)
-                return Ok("Filmen finns ej i databasen.");
-
-
-            if (movies.MovieTitle == null)
-                return Content("Titlen på filmen får ej vara tom.");
-
-
-
-            return BadRequest();
-
-        }
-
-
-
         // DELETE
 
         [HttpDelete("{id}")]

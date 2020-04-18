@@ -16,7 +16,10 @@ namespace API_Web_application.Models
 
         public DbSet<Loan> FilmstudioLoans { get; set; }
 
-        public DbSet<Trivia> Trivia { get; set; }
+        public DbSet<Review> Trivia { get; set; }
+
+        public DbSet<Label> PostLabels {get;set;}
 
     }
+
 }
