@@ -67,11 +67,11 @@ namespace API_Web_application.Controllers
         }
 
         // POST
-        [HttpPost]        
+        [HttpPost("add")]        
         public async Task<ActionResult<Label>> PostLabel(Label label)
         {
 
-            var filmExist = 
+            
 
 
             DateTime date = DateTime.UtcNow;
@@ -84,7 +84,7 @@ namespace API_Web_application.Controllers
                     
             
             
-            return CreatedAtAction("GetLabel", new { id = label.Id }, label);
+            return CreatedAtAction(nameof(label), new { id = label.Id }, label);
         
         
         }

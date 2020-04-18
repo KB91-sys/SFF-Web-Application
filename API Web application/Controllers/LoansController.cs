@@ -7,7 +7,7 @@ using API_Web_application.Models;
 
 namespace API_Web_application.Controllers
 {
-    [Route("api/loan")]
+    [Route("api/loans")]
     [ApiController]
     public class LoansController : ControllerBase
     {
@@ -109,8 +109,8 @@ namespace API_Web_application.Controllers
                 _context.FilmstudioLoans.Add(loan);
             
 
-                    await _context.SaveChangesAsync();
-                    return Ok(changeValue);
+                await _context.SaveChangesAsync();
+                return Ok(changeValue);
 
 
             }
@@ -118,10 +118,6 @@ namespace API_Web_application.Controllers
         
             if (loan.StudioName == null)
                 return Ok("Du måste skriva in vilken filmsudio som ska låna filmen");
-
-            /*if (exists == false)
-                return Ok("Filmen finns ej i databasen.");*/
-
 
             if (loan.MovieBorrowed == null)
                 return Ok("Titlen på filmen får ej vara tom.");
@@ -158,7 +154,7 @@ namespace API_Web_application.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Ok("Filmen \"" + filmstudios.MovieBorrowed + "\" är återlämnad.");
+                return Ok("Filmen \"" + filmstudios.MovieBorrowed + "\" har lämnats tillbaka av \"" + filmstudios.StudioName + "\".");
             }
 
             if (filmstudios.MovieBorrowed == null)

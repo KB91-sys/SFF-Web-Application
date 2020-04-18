@@ -9,7 +9,7 @@ using API_Web_application.Models;
 
 namespace API_Web_application.Controllers
 {
-    [Route("api/filmstudio")]
+    [Route("api/filmstudios")]
     [ApiController]
     public class FilmstudioController : ControllerBase
     {
@@ -24,12 +24,13 @@ namespace API_Web_application.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Filmstudio>>> GetFilmstudios()
         {
-            var filmstudioDb = from x in _context.Movies
+            var filmstudioDb = from x in _context.Filmstudios
                                select x;
 
             if( !filmstudioDb.Any()) {
                 return Ok("Finns inga biografer registerade.");
             }
+
 
 
 
@@ -67,7 +68,7 @@ namespace API_Web_application.Controllers
         }
 
         // POST: api/Filmstudios    
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<ActionResult<Filmstudio>> PostFilmstudio(Filmstudio filmstudio)
         {
 
@@ -89,9 +90,14 @@ namespace API_Web_application.Controllers
 
             }
 
-            else if (nameExist == true)
+            if (nameExist == true)
                 return Ok("Filmstudion \"" + filmstudio.Name + "\" finns redan i databasen.");
 
+            if (filmstudio.Name == null)
+                return Ok("Du måste skriva in namnet på studion.");
+
+            if (filmstudio.Location == null)
+                return Ok("Du måste skriva in filmstudions plats.");
 
 
 
