@@ -24,26 +24,19 @@ namespace API_Web_application.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Filmstudio>>> GetFilmstudios()
         {
-            return await _context.Filmstudios.ToListAsync();
-        }
+            var filmstudioDb = from x in _context.Movies
+                               select x;
 
-        // GET: api/Filmstudios/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Filmstudio>> GetFilmstudio(int id)
-        {
-            var filmstudio = await _context.Filmstudios.FindAsync(id);
-
-            if (filmstudio == null)
-            {
-                return NotFound();
+            if( !filmstudioDb.Any()) {
+                return Ok("Finns inga biografer registerade.");
             }
 
-            return filmstudio;
-        }
 
-        // PUT: api/Filmstudios/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+
+            return await _context.Filmstudios.ToListAsync();
+        }
+       
+        // PUT
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFilmstudio(int id, Filmstudio filmstudio)
         {
@@ -90,19 +83,19 @@ namespace API_Web_application.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Content("Studion har lagts till.");
+                return Ok("Studion har lagts till.");
 
 
 
             }
 
             else if (nameExist == true)
-                return Content("Filmstudion \"" + filmstudio.Name + "\" finns redan i databasen.");
+                return Ok("Filmstudion \"" + filmstudio.Name + "\" finns redan i databasen.");
 
 
 
 
-            return Content("Ingen studio inskriven.");
+            return Ok("Ingen studio inskriven.");
 
 
         }

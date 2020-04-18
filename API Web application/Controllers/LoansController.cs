@@ -25,7 +25,20 @@ namespace API_Web_application.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Loan>>> GetFilmstudioLoans()
         {
+            var loanDb = from x in _context.FilmstudioLoans
+                               select x;
+            
+
+            if(!loanDb.Any()){
+                return Ok("Inga filmer är utlånade för tillfället.");            
+            }
+
+
+
             return await _context.FilmstudioLoans.ToListAsync();
+        
+        
+        
         }
 
 
@@ -83,7 +96,7 @@ namespace API_Web_application.Controllers
                     if(x.MaxLoanAmount != 0) 
                     {
                         x.MaxLoanAmount--;
-                        x.BorrowedUnits++;
+                        x.LentUnits++;
                     }
                     else if(x.MaxLoanAmount == 0)
                     {
@@ -94,13 +107,7 @@ namespace API_Web_application.Controllers
 
 
                 _context.FilmstudioLoans.Add(loan);
-                
-                /*
-                var list = from x in _context.Filmstudios
-                           where loan.StudioName == x.Name
-                           select x;*/
-                
-                
+            
 
                     await _context.SaveChangesAsync();
                     return Ok(changeValue);
@@ -108,6 +115,7 @@ namespace API_Web_application.Controllers
 
             }
 
+        
             if (loan.StudioName == null)
                 return Ok("Du måste skriva in vilken filmsudio som ska låna filmen");
 
@@ -123,6 +131,61 @@ namespace API_Web_application.Controllers
             return BadRequest();
 
         }
+
+        [HttpPost("returnmovie")]
+        public async Task<ActionResult<Loan>> ReturnMovie(Loan filmstudios)
+        {
+            bool movieExist = _context.Movies.Any(m => m.MovieTitle == filmstudios.MovieBorrowed);
+            bool studioExist = _context.Filmstudios.Any(n => n.Name == filmstudios.StudioName);
+
+            if(movieExist == true && studioExist == true)
+            {
+                var loanObject = (from x in _context.FilmstudioLoans
+                                  where x.StudioName == filmstudios.StudioName && x.MovieBorrowed == filmstudios.MovieBorrowed
+                                  select x).FirstOrDefault();
+
+                _context.FilmstudioLoans.Remove(loanObject);
+
+                var filmObj = from x in _context.Movies
+                              where x.MovieTitle == filmstudios.MovieBorrowed
+                              select x;
+
+                foreach(var x in filmObj) 
+                {
+                    x.MaxLoanAmount++;
+                    x.LentUnits--;                               
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok("Filmen \"" + filmstudios.MovieBorrowed + "\" är återlämnad.");
+            }
+
+            if (filmstudios.MovieBorrowed == null)
+            {
+                return Ok("Du måste skriva in en film.");
+            }
+
+            if(filmstudios.StudioName == null)
+            {
+                return Ok("Du måste skriva in en filmstudio.");
+            }
+
+            if(movieExist == false){
+                return Ok("Filmen finns ej registrerad som utlånad.");
+            }
+            
+            if(studioExist == false){
+                return Ok("Studion har ej lånat denna film.");
+            }
+
+
+            return BadRequest();
+        
+        }
+
+
+
 
         // DELETE: api/FilmstudioLoans/5
         [HttpDelete("{id}")]

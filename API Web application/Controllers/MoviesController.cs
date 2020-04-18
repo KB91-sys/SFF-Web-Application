@@ -34,6 +34,14 @@ namespace SFF_API.Controllers
 
         public async Task<ActionResult<IEnumerable<Movie>>> GetMovie()
         {
+            var movieDb = from x in _context.Movies
+                          select x;
+
+            if( !movieDb.Any())
+            {
+                return Ok("Finns inga filmer registrerade.");
+            }
+
 
             return await _context.Movies.ToListAsync();
 
@@ -117,20 +125,12 @@ namespace SFF_API.Controllers
 
             // If movies doesnt already exist in database and movietitle isnt null
             if (movies.MovieTitle != null && exists == true)
-            {
-
-                movies.filmstudioLoanList.Add(new Loan { StudioName = movies.BorrowingFilmstudio, MovieBorrowed = movies.MovieTitle });
-
+            {                
                 await _context.SaveChangesAsync();
 
                 return Ok(movies);
-
-
             }
-
-            if (movies.BorrowingFilmstudio == null)
-                return Ok("Du måste skriva in vilken filmsudio som ska låna filmen");
-
+           
             if (exists == false)
                 return Ok("Filmen finns ej i databasen.");
 

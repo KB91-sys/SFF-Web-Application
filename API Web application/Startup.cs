@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using API_Web_application.Models;
 
@@ -29,14 +22,6 @@ namespace API_Web_application
         {
             services.AddDbContext<MovieContext>(opt =>
                 opt.UseInMemoryDatabase("Movie"));
-
-            /*
-            services.AddDbContext<FilmstudioContext>(opt =>
-                opt.UseInMemoryDatabase("Filmstudio"));
-
-            services.AddDbContext<FilmstudioLoanContext>(opt =>
-                opt.UseInMemoryDatabase("FilmstudioLoan"));
-            */
 
             services.AddControllers();
         }
