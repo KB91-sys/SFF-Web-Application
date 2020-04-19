@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_Web_application.Models
 {
-    public class MovieContext : DbContext
+    public class ProjectContext : DbContext
     {
-        public MovieContext(DbContextOptions<MovieContext> options) : base(options) { }
+        public ProjectContext(DbContextOptions<ProjectContext> options) : base(options) { }
 
         public DbSet<Movie> Movies { get; set; }
 
@@ -16,7 +16,7 @@ namespace API_Web_application.Models
 
         public DbSet<Loan> FilmstudioLoans { get; set; }
 
-        public DbSet<Review> Trivia { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         public DbSet<Label> PostLabels {get;set;}
 

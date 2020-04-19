@@ -11,13 +11,12 @@ namespace API_Web_application.Controllers
     [ApiController]
     public class LoansController : ControllerBase
     {
-        private readonly MovieContext _context;
+        private readonly ProjectContext _context;
 
         //private readonly MovieContext _movieContext;
-        public LoansController(MovieContext context)
+        public LoansController(ProjectContext context)
         {
             _context = context;
-
 
         }
 
@@ -33,12 +32,8 @@ namespace API_Web_application.Controllers
                 return Ok("Inga filmer är utlånade för tillfället.");            
             }
 
-
-
             return await _context.FilmstudioLoans.ToListAsync();
-        
-        
-        
+                       
         }
 
 
@@ -85,13 +80,14 @@ namespace API_Web_application.Controllers
             // If movies doesnt already exist in database and movietitle isnt null
             if (studioExist == true && filmExist == true)
             {
-                // Change the value of maxAmount in Movie database where movietitle == movieborrowed
-                var changeValue = from x in _context.Movies
+                // Change the value of maxAmount in Movie database 
+                // where movietitle from MovieDatabase == movieborrowed from LoanDatabase
+                var movieObject = from x in _context.Movies
                                   where x.MovieTitle == loan.MovieBorrowed
                                   select x;
                 
                 // Reduce value by one
-                foreach (var x in changeValue) 
+                foreach (var x in movieObject) 
                 {
                     if(x.MaxLoanAmount != 0) 
                     {
@@ -110,7 +106,7 @@ namespace API_Web_application.Controllers
             
 
                 await _context.SaveChangesAsync();
-                return Ok(changeValue);
+                return Ok(movieObject);
 
 
             }
@@ -136,11 +132,11 @@ namespace API_Web_application.Controllers
 
             if(movieExist == true && studioExist == true)
             {
-                var loanObject = (from x in _context.FilmstudioLoans
+                var loanObj = (from x in _context.FilmstudioLoans
                                   where x.StudioName == filmstudios.StudioName && x.MovieBorrowed == filmstudios.MovieBorrowed
                                   select x).FirstOrDefault();
 
-                _context.FilmstudioLoans.Remove(loanObject);
+                _context.FilmstudioLoans.Remove(loanObj);
 
                 var filmObj = from x in _context.Movies
                               where x.MovieTitle == filmstudios.MovieBorrowed
@@ -179,9 +175,6 @@ namespace API_Web_application.Controllers
             return BadRequest();
         
         }
-
-
-
 
         // DELETE: api/FilmstudioLoans/5
         [HttpDelete("{id}")]

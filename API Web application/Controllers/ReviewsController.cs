@@ -12,9 +12,9 @@ namespace API_Web_application.Controllers
     [ApiController]
     public class ReviewsController : ControllerBase
     {
-        private readonly MovieContext _context;
+        private readonly ProjectContext _context;
 
-        public ReviewsController(MovieContext context)
+        public ReviewsController(ProjectContext context)
         {
             _context = context;
         }
@@ -23,14 +23,14 @@ namespace API_Web_application.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Review>>> GetTrivia()
         {
-            return await _context.Trivia.ToListAsync();
+            return await _context.Reviews.ToListAsync();
         }
 
         // GET
         [HttpGet("{id}")]
         public async Task<ActionResult<Review>> GetReview(int id)
         {
-            var review = await _context.Trivia.FindAsync(id);
+            var review = await _context.Reviews.FindAsync(id);
 
             if (review == null)
             {
@@ -79,7 +79,7 @@ namespace API_Web_application.Controllers
             
             if(filmExist == true && studioExist == true) 
             {                                
-                _context.Trivia.Add(review);
+                _context.Reviews.Add(review);
                 await _context.SaveChangesAsync();
             
                 return CreatedAtAction("GetReview", new { id = review.Id }, review);                        
@@ -103,13 +103,13 @@ namespace API_Web_application.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Review>> DeleteReview(int id)
         {
-            var review = await _context.Trivia.FindAsync(id);
+            var review = await _context.Reviews.FindAsync(id);
             if (review == null)
             {
                 return NotFound();
             }
 
-            _context.Trivia.Remove(review);
+            _context.Reviews.Remove(review);
             await _context.SaveChangesAsync();
 
             return review;
@@ -117,7 +117,7 @@ namespace API_Web_application.Controllers
 
         private bool ReviewExists(int id)
         {
-            return _context.Trivia.Any(e => e.Id == id);
+            return _context.Reviews.Any(e => e.Id == id);
         }
     }
 }

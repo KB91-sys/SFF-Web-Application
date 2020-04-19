@@ -13,9 +13,9 @@ namespace API_Web_application.Controllers
     [ApiController]
     public class FilmstudioController : ControllerBase
     {
-        private readonly MovieContext _context;
+        private readonly ProjectContext _context;
 
-        public FilmstudioController(MovieContext context)
+        public FilmstudioController(ProjectContext context)
         {
             _context = context;
         }

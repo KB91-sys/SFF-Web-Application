@@ -17,9 +17,9 @@ namespace SFF_API.Controllers
     public class MoviesController : ControllerBase
     {
 
-        private readonly MovieContext _context;
+        private readonly ProjectContext _context;
 
-        public MoviesController(MovieContext context)
+        public MoviesController(ProjectContext context)
         {
             _context = context;
         }

@@ -20,8 +20,8 @@ namespace API_Web_application
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<MovieContext>(opt =>
-                opt.UseInMemoryDatabase("Movie"));
+            services.AddDbContext<ProjectContext>(opt =>
+                opt.UseInMemoryDatabase("Project"));
                         
             services.AddControllers()
                 .AddXmlDataContractSerializerFormatters();
