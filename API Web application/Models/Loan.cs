@@ -9,7 +9,7 @@ namespace API_Web_application.Models
     {
         public int Id { get; set; }
         public string StudioName { get; set; }
-        public string MovieBorrowed {get;set;}
+        public string MovieTitle { get;set;}
 
         
 

@@ -37,34 +37,61 @@ namespace API_Web_application.Controllers
             return await _context.Filmstudios.ToListAsync();
         }
        
-        // PUT
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutFilmstudio(int id, Filmstudio filmstudio)
+        // PUT CHANGE NAME AND LOCATION OF SPECIFIC FILMSTUDIO
+        [HttpPut]
+        public async Task<IActionResult> PutFilmstudio(Filmstudio filmstudio)
         {
-            if (id != filmstudio.Id)
-            {
-                return BadRequest();
-            }
+            // CHECK ID
+            bool checkIfIdExist = _context.Filmstudios.Any(x => x.Id == filmstudio.Id);
 
-            _context.Entry(filmstudio).State = EntityState.Modified;
 
-            try
+            if(checkIfIdExist == true) 
             {
+                var filmstudioObj = from x in _context.Filmstudios
+                                    where x.Id == filmstudio.Id
+                                    select x;
+
+                foreach (var x in filmstudioObj)
+                {
+                    x.StudioName = filmstudio.StudioName;
+                    x.Location = filmstudio.Location;
+
+                    
+                }
+
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FilmstudioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+
+
+                return Ok(filmstudio);
+
+
             }
 
-            return NoContent();
+
+            if (checkIfIdExist == false)
+            {
+
+                return Ok("Kunde inte hitta en filmstudio med id:t i databasen.");
+            }
+
+            if (filmstudio.StudioName == null)
+            {
+
+                return Ok("Du mååste skriva in ett nytt namn på filmstudion.");
+            }
+
+            if (filmstudio.Location == null)
+            {
+                return Ok("Filmstudions ort måste skrivas in.");
+
+            }
+
+            return BadRequest();
+
+
+
+
+
         }
 
         // POST: api/Filmstudios    
@@ -72,11 +99,11 @@ namespace API_Web_application.Controllers
         public async Task<ActionResult<Filmstudio>> PostFilmstudio(Filmstudio filmstudio)
         {
 
-            bool nameExist = _context.Filmstudios.Any(f => f.Name == filmstudio.Name);
+            bool nameExist = _context.Filmstudios.Any(f => f.StudioName == filmstudio.StudioName);
 
 
 
-            if (filmstudio.Name != null && nameExist == false)
+            if (filmstudio.StudioName != null && nameExist == false)
             {
                 Movie movie = new Movie();
 
@@ -91,9 +118,9 @@ namespace API_Web_application.Controllers
             }
 
             if (nameExist == true)
-                return Ok("Filmstudion \"" + filmstudio.Name + "\" finns redan i databasen.");
+                return Ok("Filmstudion \"" + filmstudio.StudioName + "\" finns redan i databasen.");
 
-            if (filmstudio.Name == null)
+            if (filmstudio.StudioName == null)
                 return Ok("Du måste skriva in namnet på studion.");
 
             if (filmstudio.Location == null)

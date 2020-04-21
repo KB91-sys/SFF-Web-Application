@@ -72,8 +72,8 @@ namespace API_Web_application.Controllers
         public async Task<ActionResult<Loan>> BorrowMovies(Loan loan)
         {
 
-            bool filmExist = _context.Movies.Any(x => x.MovieTitle == loan.MovieBorrowed);
-            bool studioExist = _context.Filmstudios.Any(x => x.Name == loan.StudioName);
+            bool filmExist = _context.Movies.Any(x => x.MovieTitle == loan.MovieTitle);
+            bool studioExist = _context.Filmstudios.Any(x => x.StudioName == loan.StudioName);
             bool maxAmount = _context.Movies.Any(x => x.MaxLoanAmount == 0);
 
 
@@ -83,7 +83,7 @@ namespace API_Web_application.Controllers
                 // Change the value of maxAmount in Movie database 
                 // where movietitle from MovieDatabase == movieborrowed from LoanDatabase
                 var movieObject = from x in _context.Movies
-                                  where x.MovieTitle == loan.MovieBorrowed
+                                  where x.MovieTitle == loan.MovieTitle
                                   select x;
                 
                 // Reduce value by one
@@ -115,7 +115,7 @@ namespace API_Web_application.Controllers
             if (loan.StudioName == null)
                 return Ok("Du måste skriva in vilken filmsudio som ska låna filmen");
 
-            if (loan.MovieBorrowed == null)
+            if (loan.MovieTitle == null)
                 return Ok("Titlen på filmen får ej vara tom.");
 
 
@@ -127,19 +127,19 @@ namespace API_Web_application.Controllers
         [HttpPost("returnmovie")]
         public async Task<ActionResult<Loan>> ReturnMovie(Loan filmstudios)
         {
-            bool movieExist = _context.Movies.Any(m => m.MovieTitle == filmstudios.MovieBorrowed);
-            bool studioExist = _context.Filmstudios.Any(n => n.Name == filmstudios.StudioName);
+            bool movieExist = _context.Movies.Any(m => m.MovieTitle == filmstudios.MovieTitle);
+            bool studioExist = _context.Filmstudios.Any(n => n.StudioName == filmstudios.StudioName);
 
             if(movieExist == true && studioExist == true)
             {
                 var loanObj = (from x in _context.FilmstudioLoans
-                                  where x.StudioName == filmstudios.StudioName && x.MovieBorrowed == filmstudios.MovieBorrowed
-                                  select x).FirstOrDefault();
+                                  where x.StudioName == filmstudios.StudioName && x.MovieTitle == filmstudios.MovieTitle
+                               select x).FirstOrDefault();
 
                 _context.FilmstudioLoans.Remove(loanObj);
 
                 var filmObj = from x in _context.Movies
-                              where x.MovieTitle == filmstudios.MovieBorrowed
+                              where x.MovieTitle == filmstudios.MovieTitle
                               select x;
 
                 foreach(var x in filmObj) 
@@ -150,10 +150,10 @@ namespace API_Web_application.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Ok("Filmen \"" + filmstudios.MovieBorrowed + "\" har lämnats tillbaka av \"" + filmstudios.StudioName + "\".");
+                return Ok("Filmen \"" + filmstudios.MovieTitle + "\" har lämnats tillbaka av \"" + filmstudios.StudioName + "\".");
             }
 
-            if (filmstudios.MovieBorrowed == null)
+            if (filmstudios.MovieTitle == null)
             {
                 return Ok("Du måste skriva in en film.");
             }

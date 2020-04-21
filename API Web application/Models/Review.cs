@@ -10,7 +10,7 @@ namespace API_Web_application.Models
     {
         public int Id { get; set; }
         public string MovieTitle { get; set; }
-        public string Filmstudio { get; set; }
+        public string StudioName { get; set; }
         public string FilmTriviality { get; set; }
         public int MovieScore { get; set; }
 

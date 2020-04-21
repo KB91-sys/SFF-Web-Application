@@ -44,10 +44,7 @@ namespace API_Web_application.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReview(int id, Review review)
         {
-            if (id != review.Id)
-            {
-                return BadRequest();
-            }
+         
 
             _context.Entry(review).State = EntityState.Modified;
 
@@ -75,7 +72,7 @@ namespace API_Web_application.Controllers
         public async Task<ActionResult<Review>> PostReview(Review review)
         {
             bool filmExist = _context.Movies.Any(x => x.MovieTitle == review.MovieTitle);
-            bool studioExist = _context.Filmstudios.Any(x => x.Name == review.Filmstudio);
+            bool studioExist = _context.Filmstudios.Any(x => x.StudioName == review.StudioName);
             
             if(filmExist == true && studioExist == true) 
             {                                

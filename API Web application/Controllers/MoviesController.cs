@@ -102,7 +102,7 @@ namespace SFF_API.Controllers
 
 
             if (exists == true)
-                return Ok("Filmtiteln " + movies.MovieTitle + " finns redan i databasen.");
+                return Ok("Filmtiteln \"" + movies.MovieTitle + "\" finns redan i databasen.");
 
             if (movies.MaxLoanAmount == 0)
                 return Ok("Du måste skriva in hur många gånger filmen får lånas ut.");
@@ -110,6 +110,58 @@ namespace SFF_API.Controllers
                 return BadRequest();
            
         }
+
+        // PUT
+        [HttpPut]
+        public async Task<ActionResult<Movie>> ChangeMaxLoanAmount(Movie movie) 
+        {
+
+            bool movieTitleExist = _context.Movies.Any(x => x.MovieTitle == movie.MovieTitle);
+
+            if (movieTitleExist == true)
+            {
+
+                var findObject = from x in _context.Movies
+                                 where x.MovieTitle == movie.MovieTitle
+                                 select x;
+
+                foreach (var x in findObject)
+                {
+                    x.MovieTitle = movie.MovieTitle;
+                    x.MaxLoanAmount = movie.MaxLoanAmount;
+                    x.LentUnits = x.LentUnits;                    
+                }
+
+                await _context.SaveChangesAsync();
+
+
+                return Ok(movie);
+            }
+
+            if(movieTitleExist == false) 
+            {
+
+                return Ok("Filmen finns inte registrerad i databasen.");
+            }
+
+            if(movie.MovieTitle == null) 
+            {
+
+                return Ok("Du måste skriva in filmens titel.");
+            }
+
+            if(movie.MaxLoanAmount <= 0) 
+            {
+                return Ok("Filmen måste kunnas lånas ut minst 1 gång.");
+            
+            }
+
+            return BadRequest();
+            
+
+        }
+
+
         // DELETE
 
         [HttpDelete("{id}")]
