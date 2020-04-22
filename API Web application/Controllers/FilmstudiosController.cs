@@ -95,7 +95,7 @@ namespace API_Web_application.Controllers
         }
 
         // POST: api/Filmstudios    
-        [HttpPost("add")]
+        [HttpPost]
         public async Task<ActionResult<Filmstudio>> PostFilmstudio(Filmstudio filmstudio)
         {
 

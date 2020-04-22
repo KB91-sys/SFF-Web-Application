@@ -71,7 +71,7 @@ namespace SFF_API.Controllers
 
 
         // POST
-        [HttpPost("add")]
+        [HttpPost]
         public async Task<ActionResult<Movie>> PostMovies(Movie movies)
         {
 
